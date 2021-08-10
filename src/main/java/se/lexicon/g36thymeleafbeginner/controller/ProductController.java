@@ -2,17 +2,11 @@ package se.lexicon.g36thymeleafbeginner.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import se.lexicon.g36thymeleafbeginner.model.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class ProductController {
@@ -29,8 +23,9 @@ public class ProductController {
     /*
         /products => all products.
         /products/add => create.
-        /products/remove => delete
-        products/{id} => findById
+        /products/{id}/remove => delete
+        /products/{id} => findById
+        http://localhost:8080/products/949jfjmf9vdvdf09b8
      */
 
     @GetMapping("/products")
@@ -50,10 +45,23 @@ public class ProductController {
             @RequestParam(name = "price") BigDecimal price,
             @RequestParam(name = "description") String description
     ){
-        System.out.println(name);
-        System.out.println(price);
-        System.out.println(description);
-
+        Product newProduct = new Product(UUID.randomUUID().toString(), name, description, price);
+        productList.add(newProduct);
         return "redirect:/products";
+    }
+
+    @GetMapping("/products/{id}")
+    public String findById(@PathVariable String id, Model model){
+        Optional<Product> op = productList.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+
+        if(op.isPresent()){
+            model.addAttribute("product", op.get());
+        }else {
+            return "redirect:/products";
+        }
+
+        return "productView";
     }
 }
