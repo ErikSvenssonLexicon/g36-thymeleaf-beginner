@@ -11,6 +11,9 @@
         <p th:text="${product.name}"></p>
         <p th:text="${product.price}"></p>
         <p th:text="${product.description}"></p>
+        <a th:href="@{/products/{id}/update (id = ${product.id})}">Update</a> <br>
+        <a th:href="@{/products/{id}/delete (id = ${product.id})}">Delete</a> <br>
+        <a th:href="@{/products}">Back to products</a>
     </div>
 
 </body>
